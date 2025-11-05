@@ -10,11 +10,11 @@ const userDB = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
 });
 
 module.exports.createUser = (req, res) => {
-    const { name, email, password, company } = req.body;
+    const { name, email, password, company, admin } = req.body;
 
     userDB.run(
-        `INSERT INTO users (name, email, password, company) VALUES (?, ?, ?, ?)`,
-        [name, email, password, company],
+        `INSERT INTO users (name, email, password, company, admin) VALUES (?, ?, ?, ?, ?)`,
+        [name, email, password, company, admin],
         function (err) {
             if (err) {
                 console.error("Error creating user:", err);
@@ -26,3 +26,23 @@ module.exports.createUser = (req, res) => {
         }
     );
 };
+
+module.exports.getUserByEmail = (req, res) => {
+    const { email } = req.params;
+    console.log("Fetching user with email:", email);
+    userDB.get(
+        `SELECT * FROM users WHERE email = ?`,
+        [email],
+        (err, row) => {
+            if (err) {
+                console.error("Error fetching user by email:", err);
+                res.status(500).send("Error fetching user");
+            } else {
+                if (!row) {
+                    return res.status(200).send({ exist: false });
+                }
+                res.status(200).send({ user: row, exist: true });
+            }
+        }
+    );
+}

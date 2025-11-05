@@ -1,21 +1,36 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { MdEmail, MdLock, MdPerson, MdAdminPanelSettings, MdVisibility, MdVisibilityOff, MdVerifiedUser } from 'react-icons/md'
+import { MdEmail, MdLock, MdPerson, MdAdminPanelSettings, MdVisibility, MdVisibilityOff, MdVerifiedUser, MdBusiness } from 'react-icons/md'
+import toast, { Toaster } from 'react-hot-toast'
+import axios from 'axios'
+
 const AdminSignUp = () => {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        company: '',
+        password: '',
+        admin: 1
+    })
     const [showPassword, setShowPassword] = useState(false)
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
     const navigate = useNavigate()
-    const submit = (e) => {
+    const createNewAdmin = async (e) => {
         e.preventDefault()
-        if (!name || !email || !password) {
+        if (!formData.name || !formData.email || !formData.company || !formData.password) {
             toast.error('Please fill all admin fields')
             return
         }
+        await axios.post('http://localhost:5000/users/create', formData)
+        localStorage.setItem('userEmail', formData.email)
         toast.success('Admin account created successfully')
-        navigate('/admin/signin')
+        navigate('/dashboard')
     }
     return (
         <div className="min-h-[80vh] grid place-items-center">
@@ -31,20 +46,27 @@ const AdminSignUp = () => {
                             Create administrator account
                         </p>
                     </div>
-                    <form onSubmit={submit} className="space-y-5">
+                    <form className="space-y-5">
                         <div className="space-y-2">
                             <label htmlFor="name" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                 <MdPerson className="text-orange-600" />
                                 Full Name
                             </label>
-                            <input id="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Jordan Admin" />
+                            <input name='name' id="name" value={formData.name} onChange={handleChange} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Jordan Admin" />
                         </div>
                         <div className="space-y-2">
                             <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                 <MdEmail className="text-orange-600" />
                                 Admin Email
                             </label>
-                            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="admin@example.com" />
+                            <input name='email' id="email" type="email" value={formData.email} onChange={handleChange} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="admin@example.com" />
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="company" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                <MdBusiness className="text-orange-600" />
+                                Company Name
+                            </label>
+                            <input id="company" name="company" value={formData.company} onChange={handleChange} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Acme Corporation" />
                         </div>
                         <div className="space-y-2">
                             <label htmlFor="password" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -52,13 +74,13 @@ const AdminSignUp = () => {
                                 Password
                             </label>
                             <div className="relative">
-                                <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="••••••••" />
+                                <input name='password' id="password" type={showPassword ? 'text' : 'password'} value={formData.password} onChange={handleChange} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="••••••••" />
                                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                     {showPassword ? <MdVisibilityOff className="text-xl" /> : <MdVisibility className="text-xl" />}
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" className="w-full bg-linear-to-r from-orange-700 to-orange-600 hover:from-orange-800 hover:to-orange-700 text-white rounded-xl px-4 py-3.5 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">Create Admin Account</button>
+                        <button onClick={createNewAdmin} className="w-full bg-linear-to-r from-orange-700 to-orange-600 hover:from-orange-800 hover:to-orange-700 text-white rounded-xl px-4 py-3.5 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">Create Admin Account</button>
                     </form>
                     <div className="mt-6 text-center">
                         <Link to="/admin/signin" className="text-sm text-gray-600 hover:text-orange-600 font-medium">
@@ -67,6 +89,7 @@ const AdminSignUp = () => {
                     </div>
                 </div>
             </div>
+            <Toaster position="bottom-right" />
         </div>
     )
 }

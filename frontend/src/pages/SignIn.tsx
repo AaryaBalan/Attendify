@@ -1,20 +1,35 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { MdEmail, MdLock, MdLogin, MdVisibility, MdVisibilityOff } from 'react-icons/md'
+import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
+
 const SignIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault()
         if (!email || !password) {
             toast.error('Please enter email and password')
             return
         }
-        toast.success('Signed in successfully')
-        navigate('/signin')
+        const response = await axios.get(`http://localhost:5000/users/getUserByEmail/${email}`)
+        if (response.data.exist) {
+            if (response.data.user.password !== password) {
+                toast.error('Incorrect password')
+                return
+            }
+            localStorage.setItem('userEmail', email)
+            toast.success('Signed in successfully')
+            setTimeout(() => {
+                location.reload()
+            }, 1500);
+        } else {
+            console.log(response.data)
+            toast.error('User does not exist')
+        }
     }
     return (
         <div className="min-h-[80vh] grid place-items-center">
@@ -56,6 +71,7 @@ const SignIn = () => {
                     </div>
                 </div>
             </div>
+            <Toaster position="bottom-right" />
         </div>
     )
 }

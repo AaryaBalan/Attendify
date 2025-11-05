@@ -1,21 +1,39 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { MdEmail, MdLock, MdAdminPanelSettings, MdVisibility, MdVisibilityOff, MdSecurity } from 'react-icons/md'
+import toast, { Toaster } from 'react-hot-toast'
+import axios from 'axios'
+
 const AdminSignIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault()
         if (!email || !password) {
-            toast.error('Enter admin email and password')
+            toast.error('Please enter email and password')
             return
         }
-        signIn(true)
-        toast.success('Admin signed in successfully')
-        navigate('/dashboard')
+        const response = await axios.get(`http://localhost:5000/users/getUserByEmail/${email}`)
+        if (response.data.exist) {
+            if (response.data.user.password !== password) {
+                toast.error('Incorrect password')
+                return
+            }
+            if (response.data.user.admin !== 1) {
+                toast.error('Not an admin account')
+                return
+            }
+            localStorage.setItem('userEmail', email)
+            toast.success('Signed in successfully')
+            setTimeout(() => {
+                location.reload()
+            }, 1500);
+        } else {
+            console.log(response.data)
+            toast.error('User does not exist')
+        }
     }
     return (
         <div className="min-h-[80vh] grid place-items-center">
@@ -31,7 +49,7 @@ const AdminSignIn = () => {
                             Authorized access only
                         </p>
                     </div>
-                    <form onSubmit={submit} className="space-y-5">
+                    <form className="space-y-5">
                         <div className="space-y-2">
                             <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                 <MdEmail className="text-orange-600" />
@@ -51,7 +69,7 @@ const AdminSignIn = () => {
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" className="w-full bg-linear-to-r from-orange-700 to-orange-600 hover:from-orange-800 hover:to-orange-700 text-white rounded-xl px-4 py-3.5 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">Sign In as Admin</button>
+                        <button onClick={submit} className="w-full bg-linear-to-r from-orange-700 to-orange-600 hover:from-orange-800 hover:to-orange-700 text-white rounded-xl px-4 py-3.5 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">Sign In as Admin</button>
                     </form>
                     <div className="mt-6 text-center">
                         <Link to="/admin/signup" className="text-sm text-gray-600 hover:text-orange-600 font-medium">
@@ -60,6 +78,7 @@ const AdminSignIn = () => {
                     </div>
                 </div>
             </div>
+            <Toaster position="bottom-right" />
         </div>
     )
 }
