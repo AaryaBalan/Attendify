@@ -5,7 +5,7 @@ import { MdQrCodeScanner, MdClose, MdLogout } from 'react-icons/md'
 import axios from 'axios'
 
 const Dashboard = () => {
-    const [status, setStatus] = useState('NILL')
+    const [status, setStatus] = useState('Not Checked In')
     const [isScanning, setIsScanning] = useState(false)
     const navigate = useNavigate()
 
@@ -30,6 +30,12 @@ const Dashboard = () => {
         if (!localStorage.getItem('user')) {
             navigate('/signin')
         }
+        const fetchUserStatus = async () => {
+            const response = await axios.get(`http://localhost:5000/movements/getTodayStatusById/${JSON.parse(localStorage.getItem('user')).id}`)
+            console.log('Initial movement data:', response.data)
+            setStatus(response.data.status)
+        }
+        fetchUserStatus()
     }, [])
 
     return (

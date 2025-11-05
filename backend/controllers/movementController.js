@@ -60,19 +60,42 @@ module.exports.getTodayMovementsById = (req, res) => {
                 const in_time = getCurrentTime();
                 logMovement(id, in_time, null, (err, movementId) => {
                     if (err) return res.status(500).send("Error logging movement");
-                    res.status(200).send({ movement: "in", movementId, time: in_time });
+                    res.status(200).send({ movement: "Checked In", movementId, time: in_time });
                 });
             } else {
                 const lastMovement = rows[rows.length - 1];
                 if (lastMovement.out_time) {
-                    return res.status(200).send({ movement: "already out" });
+                    return res.status(200).send({ movement: "Already Checked Out" });
                 }
 
                 updateMovementOutTime(lastMovement.id, (err) => {
                     if (err) return res.status(500).send("Error updating out time");
-                    res.status(200).send({ movement: "out", time: getCurrentTime() });
+                    res.status(200).send({ movement: "Checked Out", time: getCurrentTime() });
                 });
             }
         }
     );
 };
+
+module.exports.getTodayStatusById = (req, res) => {
+    const id = req.params.id;
+
+    userDB.get(
+        `SELECT * FROM movements WHERE user_id = ? AND date = DATE('now') ORDER BY id DESC LIMIT 1`,
+        [id],
+        (err, row) => {
+            if (err) {
+                console.error("Error fetching today's status:", err);
+                return res.status(500).send("Error fetching status");
+            }
+
+            if (!row) {
+                return res.status(200).send({ status: "Not Checked In" });
+            } else if (row && !row.out_time) {
+                return res.status(200).send({ status: "Checked In", in_time: row.in_time });
+            } else {
+                return res.status(200).send({ status: "Checked Out", in_time: row.in_time, out_time: row.out_time });
+            }
+        }
+    );
+}
