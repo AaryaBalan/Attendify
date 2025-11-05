@@ -1,0 +1,70 @@
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { MdEmail, MdLock, MdPerson, MdPersonAdd, MdVisibility, MdVisibilityOff } from 'react-icons/md'
+const SignUp = () => {
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate()
+    const submit = (e) => {
+        e.preventDefault()
+        if (!name || !email || !password) {
+            toast.error('Please fill all fields')
+            return
+        }
+        toast.success('Account created successfully')
+        navigate('/signin')
+    }
+    return (
+        <div className="min-h-[80vh] grid place-items-center">
+            <div className="w-full max-w-lg">
+                <div className="bg-white border border-orange-100 rounded-2xl shadow-xl p-8">
+                    <div className="flex flex-col items-center mb-8">
+                        <div className="h-16 w-16 rounded-full bg-linear-to-br from-orange-600 to-orange-500 grid place-items-center text-white text-2xl shadow-lg mb-4">
+                            <MdPersonAdd />
+                        </div>
+                        <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
+                        <p className="text-gray-500 mt-2">Join Attendify today</p>
+                    </div>
+                    <form onSubmit={submit} className="space-y-5">
+                        <div className="space-y-2">
+                            <label htmlFor="name" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                <MdPerson className="text-orange-600" />
+                                Full Name
+                            </label>
+                            <input id="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="Alex Doe" />
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                <MdEmail className="text-orange-600" />
+                                Email Address
+                            </label>
+                            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="you@example.com" />
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="password" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                                <MdLock className="text-orange-600" />
+                                Password
+                            </label>
+                            <div className="relative">
+                                <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="••••••••" />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    {showPassword ? <MdVisibilityOff className="text-xl" /> : <MdVisibility className="text-xl" />}
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" className="w-full bg-linear-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white rounded-xl px-4 py-3.5 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">Create Account</button>
+                    </form>
+                    <div className="mt-6 text-center">
+                        <Link to="/signin" className="text-sm text-gray-600 hover:text-orange-600 font-medium">
+                            Already have an account? <span className="text-orange-700 font-semibold">Sign in</span>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+export default SignUp
