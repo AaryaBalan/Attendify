@@ -5,6 +5,7 @@ import SignUp from './pages/SignUp'
 import AdminSignIn from './pages/AdminSignIn'
 import AdminSignUp from './pages/AdminSignUp'
 import Dashboard from './pages/Dashboard'
+import Manage from './pages/Manage'
 
 const App = () => {
   const isLoggedIn = localStorage.getItem('user')
@@ -16,6 +17,7 @@ const App = () => {
         {isLoggedIn ? (
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/manage" element={<Manage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         ) : (

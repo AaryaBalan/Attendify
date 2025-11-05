@@ -99,3 +99,56 @@ module.exports.getTodayStatusById = (req, res) => {
         }
     );
 }
+
+module.exports.getMovementsByFilter = (req, res) => {
+    const { filter, company } = req.params;
+    let dateFilter = '';
+
+    switch (filter) {
+        case 'today':
+            dateFilter = `DATE('now')`;
+            break;
+        case 'yesterday':
+            dateFilter = `DATE('now', '-1 day')`;
+            break;
+        case 'week':
+            dateFilter = `DATE('now', '-7 days')`;
+            break;
+        case 'month':
+            dateFilter = `DATE('now', '-1 month')`;
+            break;
+        case 'year':
+            dateFilter = `DATE('now', '-1 year')`;
+            break;
+        default:
+            dateFilter = `DATE('now')`;
+    }
+
+    let query = '';
+    if (filter === 'today' || filter === 'yesterday') {
+        query = `
+            SELECT m.*, u.name, u.email 
+            FROM movements m
+            JOIN users u ON m.user_id = u.id
+            WHERE u.company = ? AND m.date = ${dateFilter}
+            ORDER BY m.date DESC, m.in_time DESC
+        `;
+    } else {
+        query = `
+            SELECT m.*, u.name, u.email 
+            FROM movements m
+            JOIN users u ON m.user_id = u.id
+            WHERE u.company = ? AND m.date >= ${dateFilter}
+            ORDER BY m.date DESC, m.in_time DESC
+        `;
+    }
+
+    userDB.all(query, [company], (err, rows) => {
+        if (err) {
+            console.error("Error fetching movements:", err);
+            return res.status(500).send({ error: "Error fetching movements" });
+        }
+
+        return res.status(200).send({ movements: rows || [] });
+    });
+}

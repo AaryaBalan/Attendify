@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Scanner } from '@yudiel/react-qr-scanner'
-import { MdQrCodeScanner, MdClose, MdLogout } from 'react-icons/md'
+import { MdQrCodeScanner, MdClose, MdLogout, MdManageAccounts } from 'react-icons/md'
 import axios from 'axios'
 
 const Dashboard = () => {
     const [status, setStatus] = useState('Not Checked In')
     const [isScanning, setIsScanning] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false)
     const navigate = useNavigate()
 
     const handleLogout = () => {
@@ -29,6 +30,9 @@ const Dashboard = () => {
         document.title = 'Dashboard - Attendify'
         if (!localStorage.getItem('user')) {
             navigate('/signin')
+        }
+        if (JSON.parse(localStorage.getItem('user')).admin === 1) {
+            setIsAdmin(true)
         }
         const fetchUserStatus = async () => {
             const response = await axios.get(`http://localhost:5000/movements/getTodayStatusById/${JSON.parse(localStorage.getItem('user')).id}`)
@@ -88,6 +92,22 @@ const Dashboard = () => {
                         </div>
                     )}
                 </div>
+                {isAdmin && (
+                    <div className="mt-8 bg-white border border-orange-100 rounded-xl shadow-md p-6 text-center">
+                        <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center justify-center gap-2">
+                            <MdManageAccounts className="text-orange-600 text-2xl" />
+                            Admin Panel
+                        </h2>
+                        <p className="text-gray-600 mb-4">View and manage all company employee movements</p>
+                        <Link
+                            to="/manage"
+                            className="inline-flex items-center gap-2 bg-linear-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5"
+                        >
+                            <MdManageAccounts className="text-xl" />
+                            <span>Go to Manage Page</span>
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
     )
