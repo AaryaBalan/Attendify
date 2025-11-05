@@ -30,9 +30,10 @@ const SignUp = () => {
             return
         }
         await axios.post('http://localhost:5000/users/create', formData)
-        localStorage.setItem('userEmail', formData.email);
-        toast.success('Account created successfully')
-        navigate('/dashboard')
+        toast.success('Account created successfully, redirecting to sign in...')
+        setTimeout(() => {
+            location.href = '/signin'
+        }, 1500);
     }
 
     return (

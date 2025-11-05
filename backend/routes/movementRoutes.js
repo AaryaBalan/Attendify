@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, getUserByEmail } = require('../controllers/usersController.js');
+const { getTodayMovementsById } = require('../controllers/movementController.js');
 
 // router.get('/getUsers', getUsers);
-router.post('/create', createUser);
-router.get('/getUserByEmail/:email', getUserByEmail);
+router.get('/getTodayMovementsById/:id', getTodayMovementsById);
+// router.post('/movein', movein);
+// router.get('/getUserByEmail/:email', getUserByEmail);
 
 module.exports = router;

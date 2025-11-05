@@ -7,7 +7,7 @@ import AdminSignUp from './pages/AdminSignUp'
 import Dashboard from './pages/Dashboard'
 
 const App = () => {
-  const isLoggedIn = localStorage.getItem('userEmail')
+  const isLoggedIn = localStorage.getItem('user')
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-orange-50">

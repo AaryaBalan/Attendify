@@ -1,6 +1,6 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require('path');
-const dbPath = path.join(__dirname, '../database/users.db');
+const dbPath = path.join(__dirname, '../database/attendify.db');
 
 
 const userDB = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {

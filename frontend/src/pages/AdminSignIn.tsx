@@ -25,7 +25,7 @@ const AdminSignIn = () => {
                 toast.error('Not an admin account')
                 return
             }
-            localStorage.setItem('userEmail', email)
+            localStorage.setItem('user', JSON.stringify(response.data.user))
             toast.success('Signed in successfully')
             setTimeout(() => {
                 location.reload()

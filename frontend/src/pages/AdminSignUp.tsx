@@ -28,9 +28,10 @@ const AdminSignUp = () => {
             return
         }
         await axios.post('http://localhost:5000/users/create', formData)
-        localStorage.setItem('userEmail', formData.email)
-        toast.success('Admin account created successfully')
-        navigate('/dashboard')
+        toast.success('Admin account created successfully, redirecting to sign in...')
+        setTimeout(() => {
+            location.href = '/admin/signin'
+        }, 1500);
     }
     return (
         <div className="min-h-[80vh] grid place-items-center">

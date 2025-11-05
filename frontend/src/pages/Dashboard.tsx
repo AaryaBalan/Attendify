@@ -2,30 +2,32 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Scanner } from '@yudiel/react-qr-scanner'
 import { MdQrCodeScanner, MdClose, MdLogout } from 'react-icons/md'
+import axios from 'axios'
 
 const Dashboard = () => {
-    const [text, setText] = useState('No QR code scanned yet')
+    const [status, setStatus] = useState('NILL')
     const [isScanning, setIsScanning] = useState(false)
     const navigate = useNavigate()
 
     const handleLogout = () => {
-        localStorage.removeItem('userEmail')
+        localStorage.removeItem('user')
         location.reload()
     }
 
-    const handleScan = (detectedCodes) => {
+    const handleScan = async (detectedCodes) => {
         console.log('Detected codes:', detectedCodes)
         detectedCodes.forEach(code => {
             console.log(`Format: ${code.format}, Value: ${code.rawValue}`)
-            location.href = `${encodeURIComponent(code.rawValue)}`
-            setText(`Value: ${code.rawValue}`)
         })
+        const moveResponse = await axios.get(`http://localhost:5000/movements/getTodayMovementsById/${JSON.parse(localStorage.getItem('user')).id}`)
+        console.log('Movement data:', moveResponse.data)
+        setStatus(moveResponse.data.movement)
         setIsScanning(false)
     }
 
     useEffect(() => {
         document.title = 'Dashboard - Attendify'
-        if (!localStorage.getItem('userEmail')) {
+        if (!localStorage.getItem('user')) {
             navigate('/signin')
         }
     }, [])
@@ -57,7 +59,7 @@ const Dashboard = () => {
                             </div>
                             <div className="bg-white border border-orange-100 rounded-xl shadow-md p-6 w-full">
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Scanned Result:</h3>
-                                <p className="text-gray-700">{text}</p>
+                                <p className="text-gray-700">Status: {status}</p>
                             </div>
                         </div>
                     ) : (

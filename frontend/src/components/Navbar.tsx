@@ -4,10 +4,10 @@ import { MdEventAvailable, MdLogin, MdPersonAdd, MdAdminPanelSettings, MdMenu, M
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate = useNavigate()
-    const isLoggedIn = localStorage.getItem('userEmail')
+    const isLoggedIn = localStorage.getItem('user')
 
     const handleLogout = () => {
-        localStorage.removeItem('userEmail')
+        localStorage.removeItem('user')
         setMobileMenuOpen(false)
         navigate('/signin')
     }

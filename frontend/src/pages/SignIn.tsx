@@ -21,7 +21,7 @@ const SignIn = () => {
                 toast.error('Incorrect password')
                 return
             }
-            localStorage.setItem('userEmail', email)
+            localStorage.setItem('user', JSON.stringify(response.data.user))
             toast.success('Signed in successfully')
             setTimeout(() => {
                 location.reload()
