@@ -6,6 +6,8 @@ import AdminSignIn from './pages/AdminSignIn'
 import AdminSignUp from './pages/AdminSignUp'
 import Dashboard from './pages/Dashboard'
 import Manage from './pages/Manage'
+import Profile from './pages/Profile'
+import People from './pages/People'
 
 const App = () => {
   const isLoggedIn = localStorage.getItem('user')
@@ -18,6 +20,8 @@ const App = () => {
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/manage" element={<Manage />} />
+            <Route path="/people" element={<People />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         ) : (

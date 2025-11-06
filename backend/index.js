@@ -6,7 +6,7 @@ const movementRoutes = require('./routes/movementRoutes.js');
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-    origin: ["http://localhost:5173", "https://tblslpvn-5173.inc1.devtunnels.ms"],
+    origin: ["http://localhost:5173", "https://tblslpvn-5173.inc1.devtunnels.ms", "https://tblslpvn-5173.inc1.devtunnels.ms", "http://192.168.1.60:5173"],
     credentials: true,
 }));
 

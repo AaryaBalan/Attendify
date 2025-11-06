@@ -15,9 +15,22 @@ const userDB = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
                 password TEXT NOT NULL,
                 company TEXT NOT NULL,
                 admin BOOLEAN DEFAULT 0,
+                status TEXT DEFAULT 'pending',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        `);
+        `, (err) => {
+            if (err) {
+                console.error("Error creating users table:", err);
+            } else {
+                userDB.run(`
+                    ALTER TABLE users ADD COLUMN status TEXT DEFAULT 'pending'
+                `, (err) => {
+                    if (err && !err.message.includes('duplicate column name')) {
+                        console.error("Error adding status column:", err);
+                    }
+                });
+            }
+        });
     }
 });
 

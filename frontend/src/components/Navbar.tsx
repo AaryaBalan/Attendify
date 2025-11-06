@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { MdEventAvailable, MdLogin, MdPersonAdd, MdAdminPanelSettings, MdMenu, MdClose, MdLogout, MdDashboard, MdManageAccounts } from 'react-icons/md'
+import { MdEventAvailable, MdLogin, MdPersonAdd, MdAdminPanelSettings, MdMenu, MdClose, MdLogout, MdDashboard, MdManageAccounts, MdAccountCircle, MdPeople } from 'react-icons/md'
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const navigate = useNavigate()
@@ -33,11 +33,21 @@ const Navbar = () => {
                                 <span>Dashboard</span>
                             </Link>
                             {isAdmin && (
-                                <Link to="/manage" className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
-                                    <MdManageAccounts className="text-lg" />
-                                    <span>Manage</span>
-                                </Link>
+                                <>
+                                    <Link to="/manage" className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
+                                        <MdManageAccounts className="text-lg" />
+                                        <span>Manage</span>
+                                    </Link>
+                                    <Link to="/people" className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
+                                        <MdPeople className="text-lg" />
+                                        <span>People</span>
+                                    </Link>
+                                </>
                             )}
+                            <Link to="/profile" className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
+                                <MdAccountCircle className="text-lg" />
+                                <span>Profile</span>
+                            </Link>
                             <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-linear-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 shadow-md hover:shadow-lg transition">
                                 <MdLogout className="text-lg" />
                                 <span>Logout</span>
@@ -71,11 +81,21 @@ const Navbar = () => {
                                     <span>Dashboard</span>
                                 </Link>
                                 {isAdmin && (
-                                    <Link to="/manage" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
-                                        <MdManageAccounts className="text-xl" />
-                                        <span>Manage</span>
-                                    </Link>
+                                    <>
+                                        <Link to="/manage" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
+                                            <MdManageAccounts className="text-xl" />
+                                            <span>Manage</span>
+                                        </Link>
+                                        <Link to="/people" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
+                                            <MdPeople className="text-xl" />
+                                            <span>People</span>
+                                        </Link>
+                                    </>
                                 )}
+                                <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-700 transition">
+                                    <MdAccountCircle className="text-xl" />
+                                    <span>Profile</span>
+                                </Link>
                                 <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white bg-linear-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 shadow-md transition">
                                     <MdLogout className="text-xl" />
                                     <span>Logout</span>

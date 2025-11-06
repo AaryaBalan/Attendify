@@ -46,3 +46,94 @@ module.exports.getUserByEmail = (req, res) => {
         }
     );
 }
+
+module.exports.updateUser = (req, res) => {
+    const { id, name, email, company, password } = req.body;
+
+    if (!id || !name || !email || !company) {
+        return res.status(400).send({ error: "Missing required fields" });
+    }
+
+    if (password) {
+        userDB.run(
+            `UPDATE users SET name = ?, email = ?, company = ?, password = ? WHERE id = ?`,
+            [name, email, company, password, id],
+            function (err) {
+                if (err) {
+                    console.error("Error updating user:", err);
+                    return res.status(500).send({ error: "Error updating user" });
+                }
+                console.log("User updated with ID:", id);
+                res.status(200).send({ success: true, message: "User updated successfully" });
+            }
+        );
+    } else {
+        userDB.run(
+            `UPDATE users SET name = ?, email = ?, company = ? WHERE id = ?`,
+            [name, email, company, id],
+            function (err) {
+                if (err) {
+                    console.error("Error updating user:", err);
+                    return res.status(500).send({ error: "Error updating user" });
+                }
+                console.log("User updated with ID:", id);
+                res.status(200).send({ success: true, message: "User updated successfully" });
+            }
+        );
+    }
+}
+
+module.exports.getEmployeesByCompany = (req, res) => {
+    const { company } = req.params;
+
+    userDB.all(
+        `SELECT id, name, email, company, admin, status, created_at FROM users WHERE company = ?`,
+        [company],
+        (err, rows) => {
+            if (err) {
+                console.error("Error fetching employees:", err);
+                return res.status(500).send({ error: "Error fetching employees" });
+            }
+            res.status(200).send({ employees: rows || [] });
+        }
+    );
+}
+
+module.exports.updateUserStatus = (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status || (status !== 'accepted' && status !== 'pending')) {
+        return res.status(400).send({ error: "Invalid status" });
+    }
+
+    userDB.run(
+        `UPDATE users SET status = ? WHERE id = ?`,
+        [status, id],
+        function (err) {
+            if (err) {
+                console.error("Error updating user status:", err);
+                return res.status(500).send({ error: "Error updating status" });
+            }
+            console.log("User status updated for ID:", id);
+            res.status(200).send({ success: true, message: "Status updated successfully" });
+        }
+    );
+}
+
+module.exports.deleteUser = (req, res) => {
+    const { id } = req.params;
+
+    userDB.run(
+        `DELETE FROM users WHERE id = ?`,
+        [id],
+        function (err) {
+            if (err) {
+                console.error("Error deleting user:", err);
+                return res.status(500).send({ error: "Error deleting user" });
+            }
+            console.log("User deleted with ID:", id);
+            res.status(200).send({ success: true, message: "User deleted successfully" });
+        }
+    );
+}
